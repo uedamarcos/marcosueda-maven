@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.marcosueda.ApiDosCorreios;
@@ -9,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,5 +31,13 @@ public class CadastrarPessoa2Teste {
         assertEquals("12345",pessoa.getDocumento());
         assertEquals("MT",pessoa.getEndereco().getUf());
         assertEquals("QUADRA 20 LOTE 8",pessoa.getEndereco().getComplemento());
+    }
+
+    @Test
+    void tentaCadastrarPessoaMasSistemaDosCorreiosFalha() {
+
+        Mockito.when(apiDosCorreios.buscarDadosComBaseNoCep(anyString())).thenThrow(RuntimeException.class);
+
+        Assertions.assertThrows(RuntimeException.class, () -> cadastrarPessoa2.cadastrarPessoa2("José", "28578527976", LocalDate.of(1947, 1, 15), "69317300"));
     }
 }
